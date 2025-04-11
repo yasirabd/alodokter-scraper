@@ -1,6 +1,5 @@
 import html
 import json
-from bs4 import BeautifulSoup
 import scrapy
 from tanyadokter.items import TopicItem
 
