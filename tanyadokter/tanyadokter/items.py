@@ -11,7 +11,11 @@ class TopicItem(scrapy.Item):
     url = scrapy.Field()
 
 
-class TanyadokterItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class QuestionAnswerItem(scrapy.Item):
+    topic_category = scrapy.Field()
+    question_title = scrapy.Field()
+    question_body = scrapy.Field()
+    question_date = scrapy.Field()
+    doctor_name = scrapy.Field()
+    answer_body = scrapy.Field()
+    answer_date = scrapy.Field()
