@@ -30,7 +30,7 @@ class QASpider(scrapy.Spider):
         if next_page != "0":
             base_url = response.xpath('//paginate-button/@base-url').get()
             next_page = response.urljoin(f"{base_url}page/{next_page}")
-            yield scrapy.Request(url=next_page, callback=self.parse)
+            yield scrapy.Request(url=next_page,  meta={'topic': topic}, callback=self.parse)
 
     def parse_question_answer(self, response):
         # Extract the question and answer from the response
@@ -52,7 +52,7 @@ class QASpider(scrapy.Spider):
             'September': 'September', 'Oktober': 'October', 'November': 'November', 'Desember': 'December'
         }
 
-        # Replace month name with number
+        # Replace month names in the date string with English equivalents
         for indo_month, number in bulan.items():
             if indo_month in date_string:
                 date_string = date_string.replace(indo_month, number)
@@ -63,18 +63,36 @@ class QASpider(scrapy.Spider):
         return parsed_date.strftime('%Y-%m-%d %H:%M:%S')
     
     def clean_text(self, text):
-        decoded_text = text.encode('utf-8').decode('unicode_escape')
+        # Decode unicode and unescape HTML entities
+        text = text.encode('utf-8').decode('unicode_escape')
+        text = html.unescape(text)
 
-        # Remove anchor tags but keep the text inside
-        cleaned_text = re.sub(r'<a [^>]+>(.*?)</a>', r'\1', decoded_text)
+        # Remove <a> tags but keep inner text
+        text = re.sub(r'<a [^>]+>(.*?)</a>', r'\1', text)
+
+        # Convert <li> items to bullet points
+        text = re.sub(r'<li>(.*?)</li>', r'• \1\n', text)
+
+        # Remove <ul>, <ol> tags
+        text = re.sub(r'</?(ul|ol)>', '', text)
 
         # Remove all other HTML tags
-        cleaned_text = re.sub(r'<[^>]+>', '', cleaned_text)
+        text = re.sub(r'<[^>]+>', '', text)
 
-        # Remove extra newline
-        cleaned_text = re.sub(r'\n+', '\n', cleaned_text)
+        # Remove extra quotes
+        text = text.strip('"')
 
-        # Final strip/cleanup
-        cleaned_text = cleaned_text.strip()
+        # Normalize paragraph breaks (e.g., multiple newlines -> double newline)
+        text = re.sub(r'\n{2,}', '\n\n', text)
 
-        return cleaned_text
+        # Remove extra newlines before bullet points
+        text = re.sub(r'\n{2,}•', r'\n•', text)
+
+        # Remove leading/trailing newlines
+        text = re.sub(r'^\s*\n+', '', text)
+        text = re.sub(r'\n+\s*$', '', text)
+
+        # Remove non-ASCII characters except meaningful ones
+        text = re.sub(r'[^\x00-\x7F•°µ±Ω]', '', text)
+
+        return text
