@@ -7,7 +7,7 @@
 This project is a scraping tool designed to extract question-answers from [Alodokter.com](alodokter.com).
 
 ## Features
-- Extract `topic` and `url` questions from [Alodokter Topik](https://www.alodokter.com/komunitas/topik). Sample JSON result:
+- Extract `topic` and `url` from [Alodokter Topik](https://www.alodokter.com/komunitas/topik). Sample JSON result:
 ```JSON
 {
  "topic": "Ablasi Retina",
@@ -15,7 +15,7 @@ This project is a scraping tool designed to extract question-answers from [Alodo
 }
 ```
 
-- Extract question-answers for all of the topic. Sample JSON result:
+- Extract question-answers for all the topics. Sample JSON result:
  ```JSON
 {
  "topic_category": "Ablasi Retina",
@@ -24,7 +24,7 @@ This project is a scraping tool designed to extract question-answers from [Alodo
  "question_date": "2021-10-25 11:54:00",
  "doctor_name": "dr. Riza Marlina",
  "answer_body": "Alo, selamat siang\nkeluhan mata kabur kondisi ini dapat disebabkan oleh berapa hal seperti....",
- "answer_date": "2021-10-25 13:05:00",
+ "answer_date": "2021-10-25 13:05:00"
 }
 ```
 
